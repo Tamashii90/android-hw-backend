@@ -47,7 +47,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/api/register", "/api/login", "/api/hello").permitAll()
-                .anyRequest().authenticated()
+                .mvcMatchers("/api/**").authenticated()
+                .mvcMatchers("/**").permitAll()
                 .and()
                 .csrf().disable()
                 .exceptionHandling().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

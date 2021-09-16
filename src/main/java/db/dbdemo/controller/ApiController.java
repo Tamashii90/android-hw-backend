@@ -1,4 +1,4 @@
-package db.dbdemo;
+package db.dbdemo.controller;
 
 import db.dbdemo.model.AuthRequest;
 import db.dbdemo.model.MyUser;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class Controller {
+public class ApiController {
     @Autowired
     UserRepository userRepository;
 

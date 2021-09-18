@@ -2,15 +2,14 @@ package db.dbdemo.controller;
 
 import db.dbdemo.model.AuthRequest;
 import db.dbdemo.model.MyUser;
+import db.dbdemo.model.RegisterRequest;
 import db.dbdemo.repository.UserRepository;
 import db.dbdemo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -56,27 +55,34 @@ public class ApiController {
 
     @PostMapping("/login")
     public Map<String, String> getToken(@RequestBody AuthRequest authRequest) {
-        String username = authRequest.getEmail();
+        String email = authRequest.getEmail();
         String password = authRequest.getPassword();
         String token;
 
-        var authReq = new UsernamePasswordAuthenticationToken(username, password);
+        var authReq = new UsernamePasswordAuthenticationToken(email, password);
         try {
             authenticationManager.authenticate(authReq);
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect Email or Password");
         }
-        token = jwtUtil.generateToken(username);
+        token = jwtUtil.generateToken(email);
         return Map.of("jwt", token);
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody MyUser myUser) {
-        if (userRepository.existsByEmail(myUser.getEmail())) {
+    public Map<String, String> register(@RequestBody RegisterRequest registerRequest) {
+        String email = registerRequest.getEmail();
+        String password = registerRequest.getPassword();
+        String repeatPassowrd = registerRequest.getRepeatPassword();
+        String token;
+
+        if (userRepository.existsByEmail(email) || !password.equals(repeatPassowrd)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        userRepository.save(myUser);
-        return new ResponseEntity(HttpStatus.OK);
+
+        userRepository.save(new MyUser(email, password));
+        token = jwtUtil.generateToken(email);
+        return Map.of("jwt", token);
     }
 
 }

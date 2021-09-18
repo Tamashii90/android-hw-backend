@@ -12,13 +12,16 @@ import javax.persistence.*;
 @Entity
 @Table(name = "USERS")
 @NoArgsConstructor
-@AllArgsConstructor
 public class MyUser {
-    private static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     @Id
     private String email;
     private String password;
+    private static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public MyUser(String email, String password) {
+        this.email = email;
+        this.password = passwordEncoder.encode(password);
+    }
 
     @JsonCreator
     public void setPassword(String password) {

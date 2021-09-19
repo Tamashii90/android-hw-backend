@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.Set;
 
 
 @Entity
@@ -17,6 +18,8 @@ public class MyUser {
     private String email;
     private String password;
     private static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @OneToMany(mappedBy = "driver")
+    private Set<ViolationsLog> violations;
 
     public MyUser(String email, String password) {
         this.email = email;
@@ -38,5 +41,13 @@ public class MyUser {
 
     public String getPassword() {
         return password;
+    }
+
+    public Set<ViolationsLog> getViolations() {
+        return violations;
+    }
+
+    public void setViolations(Set<ViolationsLog> violations) {
+        this.violations = violations;
     }
 }

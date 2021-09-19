@@ -29,8 +29,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("SELECT email, password, TRUE from USERS WHERE email = ?")
-                .authoritiesByUsernameQuery("SELECT email,'ROLE_USER' from USERS WHERE email = ?");
+                .usersByUsernameQuery("SELECT email, password, TRUE from users WHERE email = ?")
+                .authoritiesByUsernameQuery("SELECT email,'ROLE_USER' from users WHERE email = ?");
 //        auth.userDetailsService(new UserDetailsService() {
 //            @Override
 //            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

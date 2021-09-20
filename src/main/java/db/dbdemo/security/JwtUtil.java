@@ -7,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
 
 @Service
 public class JwtUtil {
@@ -18,6 +17,11 @@ public class JwtUtil {
     public String extractUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(secret).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String extractAuthority(String token) {
+        return Jwts.parserBuilder().setSigningKey(secret).build()
+                .parseClaimsJws(token).getBody().get("authority", String.class);
     }
 //
 //    public Date extractExpiration(String token) {
@@ -37,11 +41,11 @@ public class JwtUtil {
 //        return extractExpiration(token).before(new Date());
 //    }
 
-    public String generateToken(String subject) {
+    public String generateToken(String subject, String authority) {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         Key key = Keys.hmacShaKeyFor(keyBytes);
-        return Jwts.builder().setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+        return Jwts.builder().setSubject(subject)
+                .claim("authority", authority)
                 .signWith(key).compact();
     }
 

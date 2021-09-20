@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,14 +59,16 @@ public class ApiController {
         String email = authRequest.getEmail();
         String password = authRequest.getPassword();
         String token;
+        GrantedAuthority authority;
 
         var authReq = new UsernamePasswordAuthenticationToken(email, password);
         try {
-            authenticationManager.authenticate(authReq);
+            var authenticatedUser = authenticationManager.authenticate(authReq);
+            authority = authenticatedUser.getAuthorities().stream().findFirst().get();
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect Email or Password");
         }
-        token = jwtUtil.generateToken(email);
+        token = jwtUtil.generateToken(email, authority.toString());
         return Map.of("jwt", token);
     }
 
@@ -81,7 +84,7 @@ public class ApiController {
         }
 
         userRepository.save(new MyUser(email, password));
-        token = jwtUtil.generateToken(email);
+        token = jwtUtil.generateToken(email, "USER");
         return Map.of("jwt", token);
     }
 

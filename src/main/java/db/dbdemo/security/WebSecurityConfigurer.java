@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,7 +29,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery("SELECT email, password, TRUE from users WHERE email = ?")
-                .authoritiesByUsernameQuery("SELECT email,'ROLE_USER' from users WHERE email = ?");
+                .authoritiesByUsernameQuery("SELECT email, 'USER' from users WHERE email = ?")
+                .and()
+                .jdbcAuthentication().dataSource(dataSource)
+                .usersByUsernameQuery("SELECT username, password, TRUE from admins WHERE username = ?")
+                .authoritiesByUsernameQuery("SELECT username, 'ADMIN' from admins WHERE username = ?");
 //        auth.userDetailsService(new UserDetailsService() {
 //            @Override
 //            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -47,6 +50,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/api/register", "/api/login", "/api/hello").permitAll()
+                .mvcMatchers("/api/authenticated").authenticated()
+                .mvcMatchers("/api/vip").hasAuthority("ADMIN")
                 .mvcMatchers("/api/**").authenticated()
                 .mvcMatchers("/**").permitAll()
                 .and()

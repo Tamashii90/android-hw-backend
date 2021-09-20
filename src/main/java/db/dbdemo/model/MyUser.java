@@ -1,12 +1,13 @@
 package db.dbdemo.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 
@@ -26,7 +27,6 @@ public class MyUser {
         this.password = passwordEncoder.encode(password);
     }
 
-    @JsonCreator
     public void setPassword(String password) {
         this.password = passwordEncoder.encode(password);
     }

@@ -1,6 +1,6 @@
 package db.dbdemo.security;
 
-import db.dbdemo.repository.UserRepository;
+import db.dbdemo.repository.VehiclesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -23,17 +24,19 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     JwtFilter filter;
     @Autowired
-    UserRepository userRepository;
+    VehiclesRepo vehiclesRepo;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("SELECT email, password, TRUE from users WHERE email = ?")
-                .authoritiesByUsernameQuery("SELECT email, 'USER' from users WHERE email = ?")
+                .usersByUsernameQuery("SELECT driver, pluged_number, TRUE from vehicles WHERE driver = ?")
+                .authoritiesByUsernameQuery("SELECT driver, 'USER' from vehicles WHERE driver = ?")
+                .passwordEncoder(getNoEncoder())
                 .and()
                 .jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery("SELECT username, password, TRUE from admins WHERE username = ?")
-                .authoritiesByUsernameQuery("SELECT username, 'ADMIN' from admins WHERE username = ?");
+                .authoritiesByUsernameQuery("SELECT username, 'ADMIN' from admins WHERE username = ?")
+                .passwordEncoder(getEncoder());
 //        auth.userDetailsService(new UserDetailsService() {
 //            @Override
 //            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -67,7 +70,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
+    PasswordEncoder getNoEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
+
     PasswordEncoder getEncoder() {
         return new BCryptPasswordEncoder();
     }

@@ -1,45 +1,66 @@
 package db.dbdemo.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Violations_Log")
 public class ViolationsLog {
     @EmbeddedId
-    private DriverViolationKey id;
-    private boolean isPaid;
+    private VehicleViolationKey id;
+    private boolean paid;
+    private String location;
+    private LocalDate date = LocalDate.now();
+
+
     @ManyToOne
-    @MapsId("driver")
-    @JoinColumn(name = "driver")
-    private MyUser driver;
+    @MapsId("plugedNumber")
+    @JoinColumn(name = "pluged_number")
+    private Vehicle plugedNumber;
 
     @ManyToOne
     @MapsId("violationId")
-    @JoinColumn(name = "Violation_Id")
+    @JoinColumn(name = "violation_id")
     private Violation violation;
 
-    public DriverViolationKey getId() {
+    public VehicleViolationKey getId() {
         return id;
     }
 
-    public void setId(DriverViolationKey id) {
+    public void setId(VehicleViolationKey id) {
         this.id = id;
     }
 
     public boolean isPaid() {
-        return isPaid;
+        return paid;
     }
 
     public void setPaid(boolean paid) {
-        isPaid = paid;
+        this.paid = paid;
     }
 
-    public MyUser getDriver() {
-        return driver;
+    public String getLocation() {
+        return location;
     }
 
-    public void setDriver(MyUser driver) {
-        this.driver = driver;
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Vehicle getPlugedNumber() {
+        return plugedNumber;
+    }
+
+    public void setPlugedNumber(Vehicle plugedNumber) {
+        this.plugedNumber = plugedNumber;
     }
 
     public Violation getViolation() {

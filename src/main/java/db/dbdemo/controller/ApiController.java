@@ -1,9 +1,9 @@
 package db.dbdemo.controller;
 
 import db.dbdemo.model.AuthRequest;
-import db.dbdemo.model.MyUser;
+import db.dbdemo.model.Vehicle;
 import db.dbdemo.model.RegisterRequest;
-import db.dbdemo.repository.UserRepository;
+import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class ApiController {
     @Autowired
-    UserRepository userRepository;
+    VehiclesRepo vehiclesRepo;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -56,36 +57,36 @@ public class ApiController {
 
     @PostMapping("/login")
     public Map<String, String> getToken(@RequestBody AuthRequest authRequest) {
-        String email = authRequest.getEmail();
-        String password = authRequest.getPassword();
+        String driver = authRequest.getUsername();
+        String plugedNumber = authRequest.getPassword();
         String token;
         GrantedAuthority authority;
 
-        var authReq = new UsernamePasswordAuthenticationToken(email, password);
+        var authReq = new UsernamePasswordAuthenticationToken(driver, plugedNumber);
         try {
             var authenticatedUser = authenticationManager.authenticate(authReq);
             authority = authenticatedUser.getAuthorities().stream().findFirst().get();
         } catch (BadCredentialsException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect Email or Password");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect Credentials");
         }
-        token = jwtUtil.generateToken(email, authority.toString());
-        return Map.of("jwt", token);
+        token = jwtUtil.generateToken(driver, authority.toString());
+        return Map.of("jwt", token, "authority", authority.toString());
     }
 
     @PostMapping("/register")
-    public Map<String, String> register(@RequestBody RegisterRequest registerRequest) {
-        String email = registerRequest.getEmail();
-        String password = registerRequest.getPassword();
-        String repeatPassowrd = registerRequest.getRepeatPassword();
+    public Map<String, String> register(@Validated @RequestBody RegisterRequest registerRequest) {
+        String driver = registerRequest.getDriver();
+        String plugedNumber = registerRequest.getPlugedNumber();
+        String repeatPlugedNumber = registerRequest.getRepeatPlugedNumber();
         String token;
 
-        if (userRepository.existsByEmail(email) || !password.equals(repeatPassowrd)) {
+        if (!plugedNumber.equals(repeatPlugedNumber) || vehiclesRepo.existsById(plugedNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        userRepository.save(new MyUser(email, password));
-        token = jwtUtil.generateToken(email, "USER");
-        return Map.of("jwt", token);
+        vehiclesRepo.save(new Vehicle(registerRequest));
+        token = jwtUtil.generateToken(driver, "USER");
+        return Map.of("jwt", token, "authority", "USER");
     }
 
 }

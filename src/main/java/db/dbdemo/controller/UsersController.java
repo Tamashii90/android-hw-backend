@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class ApiController {
+public class UsersController {
     @Autowired
     VehiclesRepo vehiclesRepo;
 

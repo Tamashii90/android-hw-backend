@@ -1,18 +1,22 @@
 package db.dbdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Table(name = "violations")
-public class Violation {
+public class Violation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String type;
     private long tax;
     @OneToMany(mappedBy = "violation")
-    private Set<ViolationsLog> violations;
+    @JsonIgnore
+    private Set<ViolationLog> violatingVehicles;
 
     public long getId() {
         return id;
@@ -38,11 +42,11 @@ public class Violation {
         this.tax = tax;
     }
 
-    public Set<ViolationsLog> getViolations() {
-        return violations;
+    public Set<ViolationLog> getViolatingVehicles() {
+        return violatingVehicles;
     }
 
-    public void setViolations(Set<ViolationsLog> violations) {
-        this.violations = violations;
+    public void setViolatingVehicles(Set<ViolationLog> violatingVehicles) {
+        this.violatingVehicles = violatingVehicles;
     }
 }

@@ -1,8 +1,10 @@
 package db.dbdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -11,7 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "vehicles")
 @NoArgsConstructor
-public class Vehicle {
+public class Vehicle implements Serializable {
     @Id
     private String plugedNumber;
     private String driver;
@@ -21,8 +23,9 @@ public class Vehicle {
     private LocalDate registrationDate;
     private boolean crossOut;
 
-    @OneToMany(mappedBy = "plugedNumber")
-    private Set<ViolationsLog> violations;
+    @OneToMany(mappedBy = "vehicle")
+    @JsonIgnore
+    private Set<ViolationLog> violations;
 
     public Vehicle(RegisterRequest registerRequest) {
         this.plugedNumber = registerRequest.getPlugedNumber();
@@ -82,11 +85,11 @@ public class Vehicle {
         this.registrationDate = registrationDate;
     }
 
-    public Set<ViolationsLog> getViolations() {
+    public Set<ViolationLog> getViolations() {
         return violations;
     }
 
-    public void setViolations(Set<ViolationsLog> violations) {
+    public void setViolations(Set<ViolationLog> violations) {
         this.violations = violations;
     }
 

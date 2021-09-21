@@ -54,7 +54,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/api/register", "/api/login", "/api/hello").permitAll()
                 .mvcMatchers("/api/authenticated").authenticated()
-                .mvcMatchers("/api/vip").hasAuthority("ADMIN")
+                .mvcMatchers("/api/vip", "/api/violations-log/**").hasAuthority("ADMIN")
                 .mvcMatchers("/api/**").authenticated()
                 .mvcMatchers("/**").permitAll()
                 .and()

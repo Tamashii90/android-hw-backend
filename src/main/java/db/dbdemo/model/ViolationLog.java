@@ -1,27 +1,41 @@
 package db.dbdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "Violations_Log")
-public class ViolationsLog {
+public class ViolationLog {
     @EmbeddedId
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private VehicleViolationKey id;
     private boolean paid;
     private String location;
-    private LocalDate date = LocalDate.now();
-
+    private LocalDate date;
 
     @ManyToOne
     @MapsId("plugedNumber")
     @JoinColumn(name = "pluged_number")
-    private Vehicle plugedNumber;
+    private Vehicle vehicle;
 
     @ManyToOne
     @MapsId("violationId")
     @JoinColumn(name = "violation_id")
     private Violation violation;
+
+    @JsonCreator
+    public ViolationLog(VehicleViolationKey id, boolean paid, String location) {
+        this.id = id;
+        this.paid = paid;
+        this.location = location;
+        this.date = LocalDate.now();
+    }
 
     public VehicleViolationKey getId() {
         return id;
@@ -55,12 +69,12 @@ public class ViolationsLog {
         this.date = date;
     }
 
-    public Vehicle getPlugedNumber() {
-        return plugedNumber;
+    public Vehicle getVehicle() {
+        return vehicle;
     }
 
-    public void setPlugedNumber(Vehicle plugedNumber) {
-        this.plugedNumber = plugedNumber;
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
     }
 
     public Violation getViolation() {
@@ -69,5 +83,18 @@ public class ViolationsLog {
 
     public void setViolation(Violation violation) {
         this.violation = violation;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", paid=" + paid +
+                ", location='" + location + '\'' +
+                ", date=" + date +
+                ", vehicle=" + vehicle +
+                ", violation=" + violation +
+                '}';
+
     }
 }

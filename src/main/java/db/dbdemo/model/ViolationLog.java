@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,6 +18,8 @@ public class ViolationLog {
     private VehicleViolationKey id;
     private boolean paid;
     private String location;
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDate date;
 
     @ManyToOne
@@ -34,7 +37,6 @@ public class ViolationLog {
         this.id = id;
         this.paid = paid;
         this.location = location;
-        this.date = LocalDate.now();
     }
 
     public VehicleViolationKey getId() {

@@ -4,6 +4,8 @@ import db.dbdemo.model.*;
 import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.repository.ViolationsLogRepo;
 import db.dbdemo.repository.ViolationsRepo;
+import org.hibernate.boot.model.naming.Identifier;
+import org.hibernate.id.IdentifierGenerationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +27,21 @@ public class ViolationLogController {
     @Autowired
     ViolationsRepo violationsRepo;
 
-    @PostMapping()
+    @GetMapping
+    public ViolationLog test(@RequestParam String plugedNumber, @RequestParam long violationId) {
+        VehicleViolationKey vehicleViolationKey = new VehicleViolationKey(plugedNumber, violationId);
+        ViolationLog violationLog = null;
+        try {
+            violationLog = violationsLogRepo.findById(vehicleViolationKey).get();
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such vehicle/violation");
+        }
+        return violationLog;
+    }
+
+    @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void addViolationOccured(@Validated @RequestBody ViolationLog violationLog) {
+    public void addViolationOccurred(@Validated @RequestBody ViolationLog violationLog) {
         Vehicle vehicle;
         Violation violation;
         String plugedNumber = violationLog.getId().getPlugedNumber();
@@ -48,15 +62,13 @@ public class ViolationLogController {
         violationsLogRepo.save(violationLog);
     }
 
-    @GetMapping()
-    public ViolationLog test(@RequestParam String plugedNumber, @RequestParam long violationId) {
-        VehicleViolationKey vehicleViolationKey = new VehicleViolationKey(plugedNumber, violationId);
-        ViolationLog violationLog = null;
+    @PutMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateViolationLog(@RequestBody ViolationLog violationLog) {
         try {
-            violationLog = violationsLogRepo.findById(vehicleViolationKey).get();
-        } catch (NoSuchElementException e) {
+            violationsLogRepo.save(violationLog);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such vehicle/violation");
         }
-        return violationLog;
     }
 }

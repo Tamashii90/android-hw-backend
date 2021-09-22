@@ -2,7 +2,7 @@ package db.dbdemo.controller;
 
 import db.dbdemo.model.AuthRequest;
 import db.dbdemo.model.Vehicle;
-import db.dbdemo.model.RegisterRequest;
+import db.dbdemo.model.VehicleRegisterRequest;
 import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,17 +74,17 @@ public class UsersController {
     }
 
     @PostMapping("/register")
-    public Map<String, String> register(@Validated @RequestBody RegisterRequest registerRequest) {
-        String driver = registerRequest.getDriver();
-        String plugedNumber = registerRequest.getPlugedNumber();
-        String repeatPlugedNumber = registerRequest.getRepeatPlugedNumber();
+    public Map<String, String> register(@Validated @RequestBody VehicleRegisterRequest vehicleRegisterRequest) {
+        String driver = vehicleRegisterRequest.getDriver();
+        String plugedNumber = vehicleRegisterRequest.getPlugedNumber();
+        String repeatPlugedNumber = vehicleRegisterRequest.getRepeatPlugedNumber();
         String token;
 
         if (!plugedNumber.equals(repeatPlugedNumber) || vehiclesRepo.existsById(plugedNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        vehiclesRepo.save(new Vehicle(registerRequest));
+        vehiclesRepo.save(new Vehicle(vehicleRegisterRequest));
         token = jwtUtil.generateToken(driver, "USER");
         return Map.of("jwt", token, "authority", "USER");
     }

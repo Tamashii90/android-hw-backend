@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-public class RegisterRequest {
+public class VehicleRegisterRequest {
     @NotEmpty
     private String plugedNumber;
     @NotEmpty

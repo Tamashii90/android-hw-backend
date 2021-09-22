@@ -27,13 +27,13 @@ public class Vehicle implements Serializable {
     @JsonIgnore
     private Set<ViolationLog> violations;
 
-    public Vehicle(RegisterRequest registerRequest) {
-        this.plugedNumber = registerRequest.getPlugedNumber();
-        this.driver = registerRequest.getDriver();
-        this.type = registerRequest.getType();
-        this.category = registerRequest.getCategory();
-        this.productionDate = registerRequest.getProductionDate();
-        this.crossOut = registerRequest.isCrossOut();
+    public Vehicle(VehicleRegisterRequest vehicleRegisterRequest) {
+        this.plugedNumber = vehicleRegisterRequest.getPlugedNumber();
+        this.driver = vehicleRegisterRequest.getDriver();
+        this.type = vehicleRegisterRequest.getType();
+        this.category = vehicleRegisterRequest.getCategory();
+        this.productionDate = vehicleRegisterRequest.getProductionDate();
+        this.crossOut = vehicleRegisterRequest.isCrossOut();
         this.registrationDate = LocalDate.now();
     }
 

@@ -1,8 +1,5 @@
 package db.dbdemo.controller;
 
-import db.dbdemo.model.Vehicle;
-import db.dbdemo.model.VehicleViolationKey;
-import db.dbdemo.model.Violation;
 import db.dbdemo.model.ViolationLog;
 import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.repository.ViolationsLogRepo;
@@ -14,7 +11,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/violations-log")
@@ -28,16 +26,25 @@ public class ViolationLogController {
     @Autowired
     ViolationsRepo violationsRepo;
 
+    @GetMapping("/{plugedNumber}")
+    public List<ViolationLog> getViolationLog(@PathVariable String plugedNumber) {
+        return violationsLogRepo.findViolationLogByPlugedNum(plugedNumber);
+    }
+
     @GetMapping
-    public ViolationLog test(@RequestParam String plugedNumber, @RequestParam long violationId) {
-        VehicleViolationKey vehicleViolationKey = new VehicleViolationKey(plugedNumber, violationId);
-        ViolationLog violationLog = null;
-        try {
-            violationLog = violationsLogRepo.findById(vehicleViolationKey).get();
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such vehicle/violation");
-        }
-        return violationLog;
+    public List<ViolationLog> getAllViolationLogs() {
+        List<ViolationLog> result = new ArrayList<>();
+        violationsLogRepo.findAll().forEach(result::add);
+//        Map<String, Object> result = new HashMap<>();
+//        List<ViolationLog> logs = new ArrayList<>();
+//        long sum = 0L;
+//        for (ViolationLog log : violationsLogRepo.findAll()) {
+//            sum += log.getViolation().getTax();
+//            logs.add(log);
+//        }
+//        result.put("logs", logs);
+//        result.put("totalTax", sum);
+        return result;
     }
 
     @PostMapping

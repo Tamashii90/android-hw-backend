@@ -34,7 +34,11 @@ public class ViolationLogController {
     @GetMapping
     public List<ViolationLog> getAllViolationLogs() {
         List<ViolationLog> result = new ArrayList<>();
-        violationsLogRepo.findAll().forEach(result::add);
+        violationsLogRepo.findAll().forEach(log -> {
+            if (!log.getVehicle().isCrossOut()) {
+                result.add(log);
+            }
+        });
 //        Map<String, Object> result = new HashMap<>();
 //        List<ViolationLog> logs = new ArrayList<>();
 //        long sum = 0L;

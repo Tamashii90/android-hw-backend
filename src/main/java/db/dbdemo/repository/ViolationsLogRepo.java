@@ -1,6 +1,5 @@
 package db.dbdemo.repository;
 
-import db.dbdemo.model.VehicleViolationKey;
 import db.dbdemo.model.ViolationCard;
 import db.dbdemo.model.ViolationLog;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface ViolationsLogRepo extends CrudRepository<ViolationLog, VehicleViolationKey> {
+public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
     @Transactional
     @Modifying
     @Query(value = "INSERT INTO violations_log(pluged_number, violation_id, date, location, paid) VALUES(:plugedNumber, :violationId, CURRENT_DATE, :location, :paid)", nativeQuery = true)
@@ -24,7 +23,7 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, VehicleV
     @Query(value = "SELECT * FROM violations_log WHERE pluged_number = :plugedNumber", nativeQuery = true)
     List<ViolationLog> findViolationLogByPlugedNum(@Param("plugedNumber") String plugedNum);
 
-    @Query(value = "SELECT `vehicles`.`pluged_number`, `vehicles`.`driver`, `violations_log`.`location`, `violations_log`.`date`, `violations_log`.`paid`, `violations`.`tax` FROM \n" +
+    @Query(value = "SELECT `violations_log`.`id`, `vehicles`.`pluged_number`, `vehicles`.`driver`, `violations_log`.`location`, `violations_log`.`date`, `violations_log`.`paid`, `violations`.`tax`, `violations`.`type` FROM \n" +
             "((`violations_log` INNER JOIN `vehicles` ON `violations_log`.`pluged_number` = `vehicles`.`pluged_number`) INNER JOIN `violations` ON violation_id = `violations`.`id`) WHERE \n" +
             "`vehicles`.`cross_out` = 0 AND \n" +
             "`vehicles`.`pluged_number` LIKE IFNULL(:plugedNumber, '%') AND \n" +
@@ -36,6 +35,10 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, VehicleV
             @Param("driver") String driver,
             @Param("location") String location,
             @Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate
-            );
+    );
 
+    @Query(value = "SELECT `violations_log`.`id`, `vehicles`.`pluged_number`, `vehicles`.`driver`, `violations_log`.`location`, `violations_log`.`date`, `violations_log`.`paid`, `violations`.`tax`, `violations`.`type` FROM \n" +
+            "((`violations_log` INNER JOIN `vehicles` ON `violations_log`.`pluged_number` = `vehicles`.`pluged_number`) INNER JOIN `violations` ON violation_id = `violations`.`id`) WHERE \n" +
+            "`violations_log`.`id`=:id", nativeQuery = true)
+    ViolationCard findViolationCard(@Param("id") Long id);
 }

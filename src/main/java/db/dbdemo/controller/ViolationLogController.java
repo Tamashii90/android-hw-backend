@@ -2,6 +2,7 @@ package db.dbdemo.controller;
 
 import db.dbdemo.model.ViolationCard;
 import db.dbdemo.model.ViolationLog;
+import db.dbdemo.model.ViolationLogRegisterRequest;
 import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.repository.ViolationsLogRepo;
 import db.dbdemo.repository.ViolationsRepo;
@@ -27,13 +28,17 @@ public class ViolationLogController {
     @Autowired
     ViolationsRepo violationsRepo;
 
-    @GetMapping("/{plugedNumber}")
-    public List<ViolationLog> getViolationLog(@PathVariable String plugedNumber) {
-        return violationsLogRepo.findViolationLogByPlugedNum(plugedNumber);
+    @GetMapping("/{id}")
+    public ViolationCard getViolationCard(@PathVariable("id") Long id) {
+        ViolationCard violationCard = violationsLogRepo.findViolationCard(id);
+        if (violationCard == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Violation doesn't exist");
+        }
+        return violationCard;
     }
 
     @GetMapping
-    public List<ViolationCard> getViolations(
+    public List<ViolationCard> getViolationCards(
             @RequestParam(name = "plugedNumber", defaultValue = "") String plugedNumber,
             @RequestParam(name = "driver", defaultValue = "") String driver,
             @RequestParam(name = "location", defaultValue = "") String location,
@@ -51,9 +56,9 @@ public class ViolationLogController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void addViolationOccurred(@Validated @RequestBody ViolationLog violationLog) {
-        String plugedNumber = violationLog.getId().getPlugedNumber();
-        long violationId = violationLog.getId().getViolationId();
+    public void addViolationOccurred(@Validated @RequestBody ViolationLogRegisterRequest violationLog) {
+        String plugedNumber = violationLog.getPlugedNumber();
+        long violationId = violationLog.getViolationId();
         String location = violationLog.getLocation();
         boolean paid = violationLog.isPaid();
         try {

@@ -1,8 +1,5 @@
 package db.dbdemo.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -13,9 +10,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Table(name = "Violations_Log")
 public class ViolationLog {
-    @EmbeddedId
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private VehicleViolationKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private boolean paid;
     private String location;
     @CreationTimestamp
@@ -23,28 +20,20 @@ public class ViolationLog {
     private LocalDate date;
 
     @ManyToOne
-    @MapsId("plugedNumber")
     @JoinColumn(name = "pluged_number")
     private Vehicle vehicle;
 
     @ManyToOne
-    @MapsId("violationId")
     @JoinColumn(name = "violation_id")
     private Violation violation;
 
-    @JsonCreator
-    public ViolationLog(VehicleViolationKey id, boolean paid, String location) {
+
+    public void setId(Long id) {
         this.id = id;
-        this.paid = paid;
-        this.location = location;
     }
 
-    public VehicleViolationKey getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(VehicleViolationKey id) {
-        this.id = id;
     }
 
     public boolean isPaid() {

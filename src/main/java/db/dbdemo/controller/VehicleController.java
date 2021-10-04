@@ -24,8 +24,7 @@ public class VehicleController {
         return vehicle;
     }
 
-    // TODO Replace PATCH because of heroku
-    @PatchMapping("/{plugedNumber}")
+    @PostMapping("/{plugedNumber}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void crossOutAVehicle(@PathVariable String plugedNumber, @RequestBody Map<String, Boolean> map) {
         Vehicle vehicle = vehiclesRepo.findById(plugedNumber).orElse(null);

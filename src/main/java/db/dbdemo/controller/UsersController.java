@@ -80,8 +80,11 @@ public class UsersController {
         String repeatPlugedNumber = vehicleRegisterRequest.getRepeatPlugedNumber();
         String token;
 
-        if (!plugedNumber.equals(repeatPlugedNumber) || vehiclesRepo.existsById(plugedNumber)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (!plugedNumber.equals(repeatPlugedNumber)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords don't match");
+        }
+        if (vehiclesRepo.existsById(plugedNumber)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehicle already exists");
         }
 
         vehiclesRepo.save(new Vehicle(vehicleRegisterRequest));

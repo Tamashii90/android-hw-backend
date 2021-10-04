@@ -6,6 +6,7 @@ import db.dbdemo.model.ViolationLogRegisterRequest;
 import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.repository.ViolationsLogRepo;
 import db.dbdemo.repository.ViolationsRepo;
+import db.dbdemo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -28,11 +29,20 @@ public class ViolationLogController {
     @Autowired
     ViolationsRepo violationsRepo;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     @GetMapping("/{id}")
-    public ViolationCard getViolationCard(@PathVariable("id") Long id) {
+    public ViolationCard getViolationCard(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorization) {
+        String token = authorization.substring(7);
+        String authority = jwtUtil.extractAuthority(token);
+        String driver = jwtUtil.extractUsername(token);
         ViolationCard violationCard = violationsLogRepo.findViolationCard(id);
         if (violationCard == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Violation doesn't exist");
+        }
+        if (!authority.equals("ADMIN") && !violationCard.getDriver().equals(driver)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         return violationCard;
     }

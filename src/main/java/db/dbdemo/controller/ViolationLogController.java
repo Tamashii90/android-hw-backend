@@ -5,7 +5,6 @@ import db.dbdemo.model.ViolationLog;
 import db.dbdemo.model.ViolationLogRegisterRequest;
 import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.repository.ViolationsLogRepo;
-import db.dbdemo.repository.ViolationsRepo;
 import db.dbdemo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,9 +24,6 @@ public class ViolationLogController {
 
     @Autowired
     VehiclesRepo vehiclesRepo;
-
-    @Autowired
-    ViolationsRepo violationsRepo;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -68,13 +64,13 @@ public class ViolationLogController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public void addViolationOccurred(@Validated @RequestBody ViolationLogRegisterRequest violationLog) {
         String plugedNumber = violationLog.getPlugedNumber();
-        long violationId = violationLog.getViolationId();
+        String violationType = violationLog.getViolationType();
         String location = violationLog.getLocation();
         boolean paid = violationLog.isPaid();
         try {
-            violationsLogRepo.insertLog(plugedNumber, violationId, location, paid);
+            violationsLogRepo.insertLog(plugedNumber, violationType, location, paid);
         } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid plugedNumber/violationId");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid plugedNumber/violationType");
         }
     }
 

@@ -24,7 +24,7 @@ public class ViolationLog {
     private Vehicle vehicle;
 
     @ManyToOne
-    @JoinColumn(name = "violation_id")
+    @JoinColumn(name = "violation_type")
     private Violation violation;
 
 

@@ -2,17 +2,17 @@ package db.dbdemo.model;
 
 
 public class ViolationLogRegisterRequest {
-    private long violationId;
+    private String violationType;
     private String plugedNumber;
     private String location;
     private boolean paid;
 
-    public long getViolationId() {
-        return violationId;
+    public String getViolationType() {
+        return violationType;
     }
 
-    public void setViolationId(long violationId) {
-        this.violationId = violationId;
+    public void setViolationType(String violationType) {
+        this.violationType = violationType;
     }
 
     public String getPlugedNumber() {
@@ -42,7 +42,7 @@ public class ViolationLogRegisterRequest {
     @Override
     public String toString() {
         return "{" +
-                "violationId=" + violationId +
+                "violationType='" + violationType + '\'' +
                 ", plugedNumber='" + plugedNumber + '\'' +
                 ", location='" + location + '\'' +
                 ", paid=" + paid +

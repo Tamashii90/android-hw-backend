@@ -3,6 +3,7 @@ package db.dbdemo.security;
 import db.dbdemo.repository.VehiclesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -53,6 +54,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/api/register", "/api/login", "/api/hello").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/api/violations-log/*").authenticated()
                 .mvcMatchers("/api/violations-log/**", "/api/vehicles/*").hasAuthority("ADMIN")
                 .mvcMatchers("/api/**").authenticated()
                 .mvcMatchers("/**").permitAll()

@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
 
-    String GET_VIOLATION_CARDS_QUERY = "SELECT `violations_log`.`id`, `vehicles`.`pluged_number`, `vehicles`.`driver`, `violations_log`.`location`, `violations_log`.`date`, `violations_log`.`paid`, `violations`.`tax`, `violations`.`type` FROM \n" +
+    String FIND_VIOLATION_CARDS_QUERY = "SELECT `violations_log`.`id`, `vehicles`.`pluged_number`, `vehicles`.`driver`, `violations_log`.`location`, `violations_log`.`date`, `violations_log`.`paid`, `violations`.`tax`, `violations`.`type` FROM \n" +
             "((`violations_log` INNER JOIN `vehicles` ON `violations_log`.`pluged_number` = `vehicles`.`pluged_number`) INNER JOIN `violations` ON violation_type = `violations`.`type`) WHERE \n" +
             "`vehicles`.`cross_out` = 0 AND \n" +
             "`vehicles`.`pluged_number` LIKE IFNULL(:plugedNumber, '%') AND \n" +
@@ -25,6 +25,13 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
     String FIND_VIOLATION_CARD_QUERY = "SELECT `violations_log`.`id`, `vehicles`.`pluged_number`, `vehicles`.`driver`, `violations_log`.`location`, `violations_log`.`date`, `violations_log`.`paid`, `violations`.`tax`, `violations`.`type` FROM \n" +
             "((`violations_log` INNER JOIN `vehicles` ON `violations_log`.`pluged_number` = `vehicles`.`pluged_number`) INNER JOIN `violations` ON violation_type = `violations`.`type`) WHERE \n" +
             "`violations_log`.`id`=:id";
+    String FIND_USERS_VIOLATION_CARDS_QUERY = "SELECT `violations_log`.`id`, `vehicles`.`pluged_number`, `vehicles`.`driver`, `violations_log`.`location`, `violations_log`.`date`, `violations_log`.`paid`, `violations`.`tax`, `violations`.`type` FROM \n" +
+            "((`violations_log` INNER JOIN `vehicles` ON `violations_log`.`pluged_number` = `vehicles`.`pluged_number`) INNER JOIN `violations` ON violation_type = `violations`.`type`) WHERE \n" +
+            "`vehicles`.`cross_out` = 0 AND \n" +
+            "`violations_log`.`paid` = 0 AND \n" +
+            "`vehicles`.`pluged_number` = :plugedNumber AND \n" +
+            "`violations_log`.`location` LIKE IFNULL(:location, '%') AND \n" +
+            "`violations_log`.`date` BETWEEN IFNULL(:fromDate, '1900-01-01') AND IFNULL(:toDate, CURRENT_DATE()) ORDER BY id DESC";
 
     @Transactional
     @Modifying
@@ -35,10 +42,17 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
 //    @Query(value = "SELECT * FROM violations_log WHERE pluged_number = :plugedNumber", nativeQuery = true)
 //    List<ViolationLog> findViolationLogByPlugedNum(@Param("plugedNumber") String plugedNum);
 
-    @Query(value = GET_VIOLATION_CARDS_QUERY, nativeQuery = true)
+    @Query(value = FIND_VIOLATION_CARDS_QUERY, nativeQuery = true)
     List<ViolationCard> getViolationCards(
             @Param("plugedNumber") String plugedNumber,
             @Param("driver") String driver,
+            @Param("location") String location,
+            @Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate
+    );
+
+    @Query(value = FIND_USERS_VIOLATION_CARDS_QUERY, nativeQuery = true)
+    List<ViolationCard> getUsersViolationCards(
+            @Param("plugedNumber") String plugedNumber,
             @Param("location") String location,
             @Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate
     );

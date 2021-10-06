@@ -28,6 +28,30 @@ public class ViolationLogController {
     @Autowired
     JwtUtil jwtUtil;
 
+    @GetMapping("/user/{plugedNumber}")
+    public List<ViolationCard> getUsersViolationCards(
+            @PathVariable("plugedNumber") String plugedNumber,
+            @RequestHeader("Authorization") String authorization,
+            @RequestParam(name = "location", defaultValue = "") String location,
+            @RequestParam(name = "fromDate", defaultValue = "") String fromDate,
+            @RequestParam(name = "toDate", defaultValue = "") String toDate) {
+        String token = authorization.substring(7);
+        String authority = jwtUtil.extractAuthority(token);
+        String driver = jwtUtil.extractUsername(token);
+        String sanitizedLocation = location.isBlank() ? null : location;
+        LocalDate sanitizedFromDate = fromDate.isBlank() ? null : LocalDate.parse(fromDate);
+        LocalDate sanitizedToDate = toDate.isBlank() ? null : LocalDate.parse(toDate);
+        List<ViolationCard> cards = violationsLogRepo.getUsersViolationCards(
+                plugedNumber, sanitizedLocation, sanitizedFromDate, sanitizedToDate
+        );
+        if (!authority.equals("ADMIN")) {
+            if (!cards.isEmpty() && !cards.get(0).getDriver().equals(driver)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        return cards;
+    }
+
     @GetMapping("/{id}")
     public ViolationCard getViolationCard(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);

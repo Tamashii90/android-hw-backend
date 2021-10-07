@@ -103,4 +103,17 @@ public class ViolationLogController {
         }
         return cards;
     }
+
+    @PostMapping("/pay/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void payForViolation(@RequestHeader("Authorization") String authorization,
+                                @PathVariable("id") Long id) {
+        String token = authorization.substring(7);
+        String driver = jwtUtil.extractUsername(token);
+        ViolationCard violationCard = violationsLogRepo.findViolationCard(id);
+        if (!violationCard.getDriver().equals(driver)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        violationsLogRepo.payForViolation(id);
+    }
 }

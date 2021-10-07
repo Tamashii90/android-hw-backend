@@ -35,6 +35,9 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
     String UPDATE_VIOLATION_LOG_QUERY = "UPDATE `violations_log`\n" +
             "SET `date` = :date, `violation_type` = :type,\n" +
             "`location` = :location, `paid` = :paid WHERE `id` = :id";
+    String PAY_FOR_VIOLATION_QUERY = "UPDATE `violations_log`\n" +
+            "SET `paid` = 1 WHERE `id` = :id";
+
 
     @Transactional
     @Modifying
@@ -73,4 +76,9 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
             @Param("location") String location,
             @Param("paid") boolean paid
     );
+
+    @Transactional
+    @Modifying
+    @Query(value = PAY_FOR_VIOLATION_QUERY, nativeQuery = true)
+    void payForViolation(@Param("id") Long id);
 }

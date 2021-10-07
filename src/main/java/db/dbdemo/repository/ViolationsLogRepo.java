@@ -32,6 +32,9 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
             "`vehicles`.`pluged_number` = :plugedNumber AND \n" +
             "`violations_log`.`location` LIKE IFNULL(:location, '%') AND \n" +
             "`violations_log`.`date` BETWEEN IFNULL(:fromDate, '1900-01-01') AND IFNULL(:toDate, CURRENT_DATE()) ORDER BY id DESC";
+    String UPDATE_VIOLATION_LOG_QUERY = "UPDATE `violations_log`\n" +
+            "SET `date` = :date, `violation_type` = :type,\n" +
+            "`location` = :location, `paid` = :paid WHERE `id` = :id";
 
     @Transactional
     @Modifying
@@ -59,4 +62,15 @@ public interface ViolationsLogRepo extends CrudRepository<ViolationLog, Long> {
 
     @Query(value = FIND_VIOLATION_CARD_QUERY, nativeQuery = true)
     ViolationCard findViolationCard(@Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query(value = UPDATE_VIOLATION_LOG_QUERY, nativeQuery = true)
+    void updateViolationLog(
+            @Param("id") Long id,
+            @Param("date") LocalDate date,
+            @Param("type") String type,
+            @Param("location") String location,
+            @Param("paid") boolean paid
+    );
 }

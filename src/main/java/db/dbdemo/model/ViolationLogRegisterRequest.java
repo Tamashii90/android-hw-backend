@@ -1,11 +1,18 @@
 package db.dbdemo.model;
 
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class ViolationLogRegisterRequest {
+    @NotBlank(message = "Violation type is required.")
     private String violationType;
+    @NotBlank(message = "Pluged number is required.")
     private String plugedNumber;
+    @NotBlank(message = "Location is required.")
     private String location;
-    private boolean paid;
+    @NotNull(message = "Paid field is required.")
+    private Boolean paid;
 
     public String getViolationType() {
         return violationType;
@@ -31,7 +38,7 @@ public class ViolationLogRegisterRequest {
         this.location = location;
     }
 
-    public boolean isPaid() {
+    public Boolean isPaid() {
         return paid;
     }
 

@@ -8,12 +8,16 @@ import db.dbdemo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/violations-log")
@@ -73,11 +77,16 @@ public class ViolationLogController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateViolationLog(@PathVariable Long id,
-                                   @RequestBody ViolationLogEditRequest request) {
-        violationsLogRepo.updateViolationLog(
-                id, request.getDate(), request.getType(),
-                request.getLocation(), request.isPaid()
-        );
+                                   @Validated @RequestBody ViolationLogEditRequest request) {
+
+        try {
+            violationsLogRepo.updateViolationLog(
+                    id, request.getDate(), request.getType(),
+                    request.getLocation(), request.isPaid()
+            );
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid violation type");
+        }
     }
 
     @GetMapping("/user/{plugedNumber}")
@@ -115,5 +124,19 @@ public class ViolationLogController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         violationsLogRepo.payForViolation(id);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, Object> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, Object> errors = new HashMap<>();
+        // only display first error
+        ObjectError error = ex.getBindingResult().getAllErrors().get(0);
+        String errorMessage = error.getDefaultMessage();
+        errors.put("message", errorMessage);
+        errors.put("status", 400);
+        errors.put("error", "Bad Request");
+        return errors;
     }
 }

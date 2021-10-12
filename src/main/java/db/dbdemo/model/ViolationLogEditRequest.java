@@ -1,12 +1,19 @@
 package db.dbdemo.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class ViolationLogEditRequest {
+    @NotBlank(message = "Violation type is required.")
     private String type;
+    @NotBlank(message = "Location is required.")
     private String location;
+    @NotNull(message = "Date is required.")
     private LocalDate date;
+    @NotNull(message = "Paid field is required.")
     private boolean paid;
+
 
     public String getType() {
         return type;

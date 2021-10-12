@@ -11,13 +11,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -67,6 +67,20 @@ public class UsersController {
         vehiclesRepo.save(new Vehicle(vehicleRegisterRequest));
         token = jwtUtil.generateToken(driver, "USER");
         return Map.of("jwt", token, "authority", "USER");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, Object> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, Object> errors = new HashMap<>();
+        // only display first error
+        ObjectError error = ex.getBindingResult().getAllErrors().get(0);
+        String errorMessage = error.getDefaultMessage();
+        errors.put("message", errorMessage);
+        errors.put("status", 400);
+        errors.put("error", "Bad Request");
+        return errors;
     }
 
 }

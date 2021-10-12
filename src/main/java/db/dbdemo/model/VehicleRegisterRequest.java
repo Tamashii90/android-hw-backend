@@ -2,14 +2,18 @@ package db.dbdemo.model;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class VehicleRegisterRequest {
     @NotEmpty
+    @Size(min = 6, max = 6, message = "Pluged Number must be 6 digits.")
     private String plugedNumber;
     @NotEmpty
+    @Size(min = 6, max = 6, message = "Pluged Number must be 6 digits.")
     private String repeatPlugedNumber;
     @NotEmpty
+    @Size(max = 13, message = "Name must be 13 characters max.")
     private String driver;
     @NotEmpty
     private String type;

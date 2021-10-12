@@ -53,7 +53,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .mvcMatchers("/api/register", "/api/login", "/api/hello").permitAll()
+                .mvcMatchers("/api/register", "/api/login").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/api/violations-log/*").authenticated()
                 .mvcMatchers(HttpMethod.GET, "/api/violations-log/user/*").authenticated()
                 .mvcMatchers(HttpMethod.POST, "/api/violations-log/pay/*").authenticated()

@@ -12,10 +12,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -29,31 +31,6 @@ public class UsersController {
 
     @Autowired
     AuthenticationManager authenticationManager;
-
-    @GetMapping("/public")
-    public String testPublic() {
-        return "/public is accessed";
-    }
-
-    @GetMapping("/hello")
-    public String hello() {
-        return "<h1>" + "DD" + "</h1>";
-    }
-
-    @GetMapping("/authenticated")
-    public String testAuth() {
-        return "/authenticated is accessed";
-    }
-
-    @GetMapping("/vip")
-    public String testUser() {
-        return "/vip is accessed";
-    }
-
-    @GetMapping("/admin")
-    public String currentUserName(Principal principal) {
-        return principal.getName();
-    }
 
     @PostMapping("/login")
     public Map<String, String> getToken(@RequestBody AuthRequest authRequest) {

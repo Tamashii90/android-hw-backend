@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.Set;
 
 
-// TODO Add field validations
 @Entity
 @Table(name = "vehicles")
 @NoArgsConstructor
@@ -17,8 +16,8 @@ public class Vehicle implements Serializable {
     @Id
     private String plugedNumber;
     private String driver;
-    private String type;
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private VehicleTypes type;
     private LocalDate productionDate;
     private LocalDate registrationDate;
     private boolean crossOut;
@@ -31,7 +30,6 @@ public class Vehicle implements Serializable {
         this.plugedNumber = vehicleRegisterRequest.getPlugedNumber();
         this.driver = vehicleRegisterRequest.getDriver();
         this.type = vehicleRegisterRequest.getType();
-        this.category = vehicleRegisterRequest.getCategory();
         this.productionDate = vehicleRegisterRequest.getProductionDate();
         this.crossOut = vehicleRegisterRequest.isCrossOut();
         this.registrationDate = LocalDate.now();
@@ -53,20 +51,12 @@ public class Vehicle implements Serializable {
         this.driver = driver;
     }
 
-    public String getType() {
+    public VehicleTypes getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(VehicleTypes type) {
         this.type = type;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public LocalDate getProductionDate() {

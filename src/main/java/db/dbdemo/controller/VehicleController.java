@@ -1,13 +1,17 @@
 package db.dbdemo.controller;
 
 import db.dbdemo.model.Vehicle;
+import db.dbdemo.model.VehicleTypes;
 import db.dbdemo.repository.VehiclesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -22,6 +26,13 @@ public class VehicleController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle doesn't exist");
         }
         return vehicle;
+    }
+
+    @GetMapping("/types")
+    public List<String> getTypes() {
+        return Arrays.stream(VehicleTypes.values())
+                .map(VehicleTypes::getDescription)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/{plugedNumber}")

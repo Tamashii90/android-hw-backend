@@ -15,10 +15,8 @@ public class VehicleRegisterRequest {
     @NotEmpty
     @Size(max = 13, message = "Name must be 13 characters max.")
     private String driver;
-    @NotEmpty
-    private String type;
-    @NotEmpty
-    private String category;
+    @NotNull
+    private VehicleTypes type;
     @NotNull
     private LocalDate productionDate;
     @NotNull
@@ -48,20 +46,12 @@ public class VehicleRegisterRequest {
         this.driver = driver;
     }
 
-    public String getType() {
+    public VehicleTypes getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(VehicleTypes type) {
         this.type = type;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public LocalDate getProductionDate() {

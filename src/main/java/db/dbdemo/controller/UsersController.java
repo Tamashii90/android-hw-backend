@@ -34,19 +34,21 @@ public class UsersController {
 
     @PostMapping("/login")
     public Map<String, String> getToken(@RequestBody AuthRequest authRequest) {
-        String driver = authRequest.getUsername();
+        String requestDriver = authRequest.getUsername();
         String plugedNumber = authRequest.getPassword();
         String token;
         GrantedAuthority authority;
+        String dbDriver;
 
-        var authReq = new UsernamePasswordAuthenticationToken(driver, plugedNumber);
+        var authReq = new UsernamePasswordAuthenticationToken(requestDriver, plugedNumber);
         try {
             var authenticatedUser = authenticationManager.authenticate(authReq);
             authority = authenticatedUser.getAuthorities().stream().findFirst().get();
+            dbDriver = authenticatedUser.getName();
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect Credentials");
         }
-        token = jwtUtil.generateToken(driver, authority.toString());
+        token = jwtUtil.generateToken(dbDriver, authority.toString());
         return Map.of("jwt", token, "authority", authority.toString());
     }
 

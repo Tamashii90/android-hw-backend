@@ -60,7 +60,7 @@ public class UsersController {
         String token;
 
         if (!plugedNumber.equals(repeatPlugedNumber)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords don't match");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pluged numbers don't match");
         }
         if (vehiclesRepo.existsById(plugedNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehicle already exists");

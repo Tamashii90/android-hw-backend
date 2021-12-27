@@ -30,7 +30,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("SELECT driver, pluged_number, TRUE from vehicles WHERE driver = ?")
+                .usersByUsernameQuery("SELECT driver, plate_number, TRUE from vehicles WHERE driver = ?")
                 .authoritiesByUsernameQuery("SELECT driver, 'USER' from vehicles WHERE driver = ?")
                 .passwordEncoder(getNoEncoder())
                 .and()

@@ -37,12 +37,12 @@ public class UsersController {
     @PostMapping("/login")
     public Map<String, String> getToken(@RequestBody AuthRequest authRequest) {
         String requestDriver = authRequest.getUsername();
-        String plugedNumber = authRequest.getPassword();
+        String plateNumber = authRequest.getPassword();
         String token;
         GrantedAuthority authority;
         String dbDriver;
 
-        var authReq = new UsernamePasswordAuthenticationToken(requestDriver, plugedNumber);
+        var authReq = new UsernamePasswordAuthenticationToken(requestDriver, plateNumber);
         try {
             var authenticatedUser = authenticationManager.authenticate(authReq);
             authority = authenticatedUser.getAuthorities().stream().findFirst().get();
@@ -57,14 +57,14 @@ public class UsersController {
     @PostMapping("/register")
     public Map<String, String> register(@Validated @RequestBody VehicleRegisterRequest vehicleRegisterRequest) {
         String driver = vehicleRegisterRequest.getDriver();
-        String plugedNumber = vehicleRegisterRequest.getPlugedNumber();
-        String repeatPlugedNumber = vehicleRegisterRequest.getRepeatPlugedNumber();
+        String plateNumber = vehicleRegisterRequest.getPlateNumber();
+        String repeatPlateNumber = vehicleRegisterRequest.getRepeatPlateNumber();
         String token;
 
-        if (!plugedNumber.equals(repeatPlugedNumber)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pluged numbers don't match");
+        if (!plateNumber.equals(repeatPlateNumber)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Plate numbers don't match");
         }
-        if (vehiclesRepo.existsById(plugedNumber)) {
+        if (vehiclesRepo.existsById(plateNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehicle already exists");
         }
 

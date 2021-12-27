@@ -19,9 +19,9 @@ public class VehicleController {
     @Autowired
     VehiclesRepo vehiclesRepo;
 
-    @GetMapping("/{plugedNumber}")
-    public Vehicle getVehicle(@PathVariable("plugedNumber") String plugedNumber) {
-        Vehicle vehicle = vehiclesRepo.findById(plugedNumber).orElse(null);
+    @GetMapping("/{plateNumber}")
+    public Vehicle getVehicle(@PathVariable("plateNumber") String plateNumber) {
+        Vehicle vehicle = vehiclesRepo.findById(plateNumber).orElse(null);
         if (vehicle == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle doesn't exist");
         }
@@ -35,10 +35,10 @@ public class VehicleController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/{plugedNumber}")
+    @PostMapping("/{plateNumber}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void crossOutAVehicle(@PathVariable String plugedNumber, @RequestBody Map<String, Boolean> map) {
-        Vehicle vehicle = vehiclesRepo.findById(plugedNumber).orElse(null);
+    public void crossOutAVehicle(@PathVariable String plateNumber, @RequestBody Map<String, Boolean> map) {
+        Vehicle vehicle = vehiclesRepo.findById(plateNumber).orElse(null);
         if (vehicle == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vehicle doesn't exist");
         }

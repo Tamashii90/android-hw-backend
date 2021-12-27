@@ -8,10 +8,10 @@ import java.time.LocalDate;
 
 public class VehicleRegisterRequest {
 
-    @Pattern(regexp = "\\d{6}", message = "Pluged number must be 6 digits.")
-    private String plugedNumber;
-    @Pattern(regexp = "\\d{6}", message = "Pluged number must be 6 digits.")
-    private String repeatPlugedNumber;
+    @Pattern(regexp = "\\d{6}", message = "Plate number must be 6 digits.")
+    private String plateNumber;
+    @Pattern(regexp = "\\d{6}", message = "Plate number must be 6 digits.")
+    private String repeatPlateNumber;
     @NotEmpty
     @Size(max = 13, message = "Name must be 13 characters max.")
     private String driver;
@@ -22,20 +22,20 @@ public class VehicleRegisterRequest {
     @NotNull
     private Boolean crossOut;
 
-    public String getPlugedNumber() {
-        return plugedNumber;
+    public String getPlateNumber() {
+        return plateNumber;
     }
 
-    public void setPlugedNumber(String plugedNumber) {
-        this.plugedNumber = plugedNumber;
+    public void setplateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
-    public String getRepeatPlugedNumber() {
-        return repeatPlugedNumber;
+    public String getRepeatPlateNumber() {
+        return repeatPlateNumber;
     }
 
-    public void setRepeatPlugedNumber(String repeatPlugedNumber) {
-        this.repeatPlugedNumber = repeatPlugedNumber;
+    public void setRepeatPlateNumber(String repeatPlateNumber) {
+        this.repeatPlateNumber = repeatPlateNumber;
     }
 
     public String getDriver() {

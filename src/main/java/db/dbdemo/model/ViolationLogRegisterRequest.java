@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull;
 public class ViolationLogRegisterRequest {
     @NotBlank(message = "Violation type is required.")
     private String violationType;
-    @NotBlank(message = "Pluged number is required.")
-    private String plugedNumber;
+    @NotBlank(message = "Plate number is required.")
+    private String plateNumber;
     @NotBlank(message = "Location is required.")
     private String location;
     @NotNull(message = "Paid field is required.")
@@ -22,12 +22,12 @@ public class ViolationLogRegisterRequest {
         this.violationType = violationType;
     }
 
-    public String getPlugedNumber() {
-        return plugedNumber;
+    public String getPlateNumber() {
+        return plateNumber;
     }
 
-    public void setPlugedNumber(String plugedNumber) {
-        this.plugedNumber = plugedNumber;
+    public void setplateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
     public String getLocation() {
@@ -50,7 +50,7 @@ public class ViolationLogRegisterRequest {
     public String toString() {
         return "{" +
                 "violationType='" + violationType + '\'' +
-                ", plugedNumber='" + plugedNumber + '\'' +
+                ", plateNumber='" + plateNumber + '\'' +
                 ", location='" + location + '\'' +
                 ", paid=" + paid +
                 '}';

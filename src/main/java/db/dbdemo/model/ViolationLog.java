@@ -20,7 +20,7 @@ public class ViolationLog {
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "pluged_number")
+    @JoinColumn(name = "plate_number")
     private Vehicle vehicle;
 
     @ManyToOne

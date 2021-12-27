@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Vehicle implements Serializable {
     @Id
-    private String plugedNumber;
+    private String plateNumber;
     private String driver;
     @Enumerated(EnumType.STRING)
     private VehicleTypes type;
@@ -27,7 +27,7 @@ public class Vehicle implements Serializable {
     private Set<ViolationLog> violations;
 
     public Vehicle(VehicleRegisterRequest vehicleRegisterRequest) {
-        this.plugedNumber = vehicleRegisterRequest.getPlugedNumber();
+        this.plateNumber = vehicleRegisterRequest.getPlateNumber();
         this.driver = vehicleRegisterRequest.getDriver();
         this.type = vehicleRegisterRequest.getType();
         this.productionDate = vehicleRegisterRequest.getProductionDate();
@@ -35,12 +35,12 @@ public class Vehicle implements Serializable {
         this.registrationDate = LocalDate.now();
     }
 
-    public void setPlugedNumber(String plugedNumber) {
-        this.plugedNumber = plugedNumber;
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
-    public String getPlugedNumber() {
-        return plugedNumber;
+    public String getPlateNumber() {
+        return plateNumber;
     }
 
     public String getDriver() {

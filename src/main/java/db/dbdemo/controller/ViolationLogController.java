@@ -30,32 +30,32 @@ public class ViolationLogController {
 
     @GetMapping
     public List<ViolationCard> getViolationCards(
-            @RequestParam(name = "plugedNumber", defaultValue = "") String plugedNumber,
+            @RequestParam(name = "plateNumber", defaultValue = "") String plateNumber,
             @RequestParam(name = "driver", defaultValue = "") String driver,
             @RequestParam(name = "location", defaultValue = "") String location,
             @RequestParam(name = "fromDate", defaultValue = "") String fromDate,
             @RequestParam(name = "toDate", defaultValue = "") String toDate) {
-        String sanitizedPlugedNumber = plugedNumber.isBlank() ? null : plugedNumber;
+        String sanitizedPlateNumber = plateNumber.isBlank() ? null : plateNumber;
         String sanitizedDriver = driver.isBlank() ? null : driver;
         String sanitizedLocation = location.isBlank() ? null : location;
         LocalDate sanitizedFromDate = fromDate.isBlank() ? null : LocalDate.parse(fromDate);
         LocalDate sanitizedToDate = toDate.isBlank() ? null : LocalDate.parse(toDate);
         return violationsLogRepo.getViolationCards(
-                sanitizedPlugedNumber, sanitizedDriver, sanitizedLocation, sanitizedFromDate, sanitizedToDate
+                sanitizedPlateNumber, sanitizedDriver, sanitizedLocation, sanitizedFromDate, sanitizedToDate
         );
     }
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public void addViolationOccurred(@Validated @RequestBody ViolationLogRegisterRequest violationLog) {
-        String plugedNumber = violationLog.getPlugedNumber();
+        String plateNumber = violationLog.getPlateNumber();
         String violationType = violationLog.getViolationType();
         String location = violationLog.getLocation();
         boolean paid = violationLog.isPaid();
         try {
-            violationsLogRepo.insertLog(plugedNumber, violationType, location, paid);
+            violationsLogRepo.insertLog(plateNumber, violationType, location, paid);
         } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid plugedNumber/violationType");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid plateNumber/violationType");
         }
     }
 
@@ -89,9 +89,9 @@ public class ViolationLogController {
         }
     }
 
-    @GetMapping("/user/{plugedNumber}")
+    @GetMapping("/user/{plateNumber}")
     public List<ViolationCard> getUsersViolationCards(
-            @PathVariable("plugedNumber") String plugedNumber,
+            @PathVariable("plateNumber") String plateNumber,
             @RequestHeader("Authorization") String authorization,
             @RequestParam(name = "location", defaultValue = "") String location,
             @RequestParam(name = "fromDate", defaultValue = "") String fromDate,
@@ -103,7 +103,7 @@ public class ViolationLogController {
         LocalDate sanitizedFromDate = fromDate.isBlank() ? null : LocalDate.parse(fromDate);
         LocalDate sanitizedToDate = toDate.isBlank() ? null : LocalDate.parse(toDate);
         List<ViolationCard> cards = violationsLogRepo.getUsersViolationCards(
-                plugedNumber, sanitizedLocation, sanitizedFromDate, sanitizedToDate
+                plateNumber, sanitizedLocation, sanitizedFromDate, sanitizedToDate
         );
         if (!authority.equals("ADMIN")) {
             if (!cards.isEmpty() && !cards.get(0).getDriver().equals(driver)) {

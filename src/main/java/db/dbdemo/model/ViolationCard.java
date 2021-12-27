@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
 public interface ViolationCard {
-    @JsonProperty("plugedNumber")
-    String getPluged_Number();
+    @JsonProperty("plateNumber")
+    String getPlate_Number();
 
     String getType();
 

@@ -58,7 +58,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "/api/violations-log/user/*").authenticated()
                 .mvcMatchers(HttpMethod.POST, "/api/violations-log/pay/*").authenticated()
                 .mvcMatchers(HttpMethod.GET, "/api/violations", "/api/vehicles/types").permitAll()
-                .mvcMatchers("/api/register", "/api/violations-log/**", "/api/vehicles/*").hasAuthority("ADMIN")
+                .mvcMatchers("/api/register", "/api/admin", "/api/violations-log/**", "/api/vehicles/*").hasAuthority("ADMIN")
                 .mvcMatchers("/api/**").authenticated()
                 .mvcMatchers("/**").permitAll()
                 .and()

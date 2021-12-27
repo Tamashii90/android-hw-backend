@@ -15,6 +15,14 @@ public class Admin {
     private String password;
     private static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    public Admin() {
+    }
+
+    public Admin(AdminRegisterRequest adminRegisterRequest) {
+        this.username = adminRegisterRequest.getUsername();
+        setPassword(adminRegisterRequest.getPassword());
+    }
+
     public String getUsername() {
         return username;
     }

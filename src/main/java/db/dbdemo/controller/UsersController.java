@@ -1,8 +1,7 @@
 package db.dbdemo.controller;
 
-import db.dbdemo.model.AuthRequest;
-import db.dbdemo.model.Vehicle;
-import db.dbdemo.model.VehicleRegisterRequest;
+import db.dbdemo.model.*;
+import db.dbdemo.repository.AdminsRepo;
 import db.dbdemo.repository.VehiclesRepo;
 import db.dbdemo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,9 @@ import java.util.Map;
 public class UsersController {
     @Autowired
     VehiclesRepo vehiclesRepo;
+
+    @Autowired
+    AdminsRepo adminsRepo;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -69,6 +71,23 @@ public class UsersController {
         vehiclesRepo.save(new Vehicle(vehicleRegisterRequest));
         token = jwtUtil.generateToken(driver, "USER");
         return Map.of("jwt", token, "authority", "USER");
+    }
+
+    @PostMapping("/admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registerAdmin(@Validated @RequestBody AdminRegisterRequest adminRegisterRequest) {
+        String username = adminRegisterRequest.getUsername();
+        String password = adminRegisterRequest.getPassword();
+        String repeatPassword = adminRegisterRequest.getRepeatPassword();
+
+        if (!password.equals(repeatPassword)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords don't match.");
+        }
+        if (adminsRepo.existsById(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists.");
+        }
+
+        adminsRepo.save(new Admin(adminRegisterRequest));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

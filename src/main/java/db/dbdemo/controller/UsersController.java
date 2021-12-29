@@ -55,11 +55,10 @@ public class UsersController {
     }
 
     @PostMapping("/register")
-    public Map<String, String> register(@Validated @RequestBody VehicleRegisterRequest vehicleRegisterRequest) {
-        String driver = vehicleRegisterRequest.getDriver();
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(@Validated @RequestBody VehicleRegisterRequest vehicleRegisterRequest) {
         String plateNumber = vehicleRegisterRequest.getPlateNumber();
         String repeatPlateNumber = vehicleRegisterRequest.getRepeatPlateNumber();
-        String token;
 
         if (!plateNumber.equals(repeatPlateNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Plate numbers don't match");
@@ -67,10 +66,7 @@ public class UsersController {
         if (vehiclesRepo.existsById(plateNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehicle already exists");
         }
-
         vehiclesRepo.save(new Vehicle(vehicleRegisterRequest));
-        token = jwtUtil.generateToken(driver, "USER");
-        return Map.of("jwt", token, "authority", "USER");
     }
 
     @PostMapping("/admin")

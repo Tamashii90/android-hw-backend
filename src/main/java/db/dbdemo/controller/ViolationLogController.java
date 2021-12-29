@@ -120,7 +120,7 @@ public class ViolationLogController {
         String token = authorization.substring(7);
         String driver = jwtUtil.extractUsername(token);
         ViolationCard violationCard = violationsLogRepo.findViolationCard(id);
-        if (!violationCard.getDriver().equals(driver)) {
+        if (violationCard == null || !violationCard.getDriver().equals(driver)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         violationsLogRepo.payForViolation(id);
